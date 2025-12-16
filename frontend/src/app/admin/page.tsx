@@ -33,6 +33,12 @@ function AdminContent() {
     loadData();
   }, [activeTab]);
 
+  useEffect(() => {
+    if (activeTab === 'bookings' && resources.length === 0) {
+      adminApi.getAllResources().then(setResources).catch(() => {});
+    }
+  }, [activeTab, resources.length]);
+
   const loadData = async () => {
     setIsLoading(true);
     setError('');

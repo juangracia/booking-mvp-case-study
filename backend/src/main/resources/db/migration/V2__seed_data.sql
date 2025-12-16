@@ -4,7 +4,7 @@ INSERT INTO users (id, email, password, role, created_at, updated_at)
 VALUES (
     'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
     'admin@example.com',
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4hK1v.K3Js.mLa6a',
+    '$2a$12$sy1DSll94d4GKm5TUoVWRuVYiAO2sDI.06B7dRhnUMkAkMCZ.ft9K',
     'ADMIN',
     NOW(),
     NOW()
@@ -15,7 +15,7 @@ INSERT INTO users (id, email, password, role, created_at, updated_at)
 VALUES (
     'b2c3d4e5-f6a7-8901-bcde-f23456789012',
     'user@example.com',
-    '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+    '$2a$12$JDn4BNf5j1UAOWvRiU65kelnAxAHTV9FH7pSwA9Dboau.nJrrkQEO',
     'USER',
     NOW(),
     NOW()
