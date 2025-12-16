@@ -25,7 +25,7 @@ RUN chown -R appuser:appgroup /app
 
 USER appuser
 
-EXPOSE 18080
+EXPOSE 28080
 
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 

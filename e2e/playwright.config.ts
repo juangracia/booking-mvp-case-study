@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.FRONTEND_URL || 'http://localhost:13000',
+    baseURL: process.env.FRONTEND_URL || 'http://localhost:23000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -22,7 +22,7 @@ export default defineConfig({
     ? undefined
     : {
         command: 'docker compose up -d && sleep 10',
-        url: 'http://localhost:13000',
+        url: 'http://localhost:23000',
         reuseExistingServer: true,
         timeout: 120000,
       },
