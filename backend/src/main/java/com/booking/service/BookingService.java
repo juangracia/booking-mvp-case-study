@@ -37,6 +37,7 @@ public class BookingService {
     @Value("${app.booking.max-duration-hours:8}")
     private int maxDurationHours;
 
+    @Transactional(readOnly = true)
     public List<BookingResponse> getUserBookings(UUID userId) {
         return bookingRepository.findByUserIdOrderByStartAtDesc(userId)
                 .stream()
@@ -44,6 +45,7 @@ public class BookingService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<BookingResponse> getAllBookings(UUID resourceId, Instant startDate, Instant endDate) {
         return bookingRepository.findAllWithFilters(resourceId, startDate, endDate)
                 .stream()
@@ -51,11 +53,16 @@ public class BookingService {
                 .toList();
     }
 
-    public BookingResponse getBookingById(UUID id) {
+    @Transactional(readOnly = true)
+    public BookingResponse getBookingById(UUID id, UserPrincipal principal) {
         Booking booking = findBookingById(id);
+        if (!principal.isAdmin() && !booking.getUser().getId().equals(principal.getId())) {
+            throw BookingException.forbidden("You can only view your own bookings");
+        }
         return BookingResponse.from(booking);
     }
 
+    @Transactional(readOnly = true)
     public List<AvailabilitySlot> getAvailability(UUID resourceId, LocalDate date) {
         Instant dayStart = date.atStartOfDay(ZoneOffset.UTC).toInstant();
         Instant dayEnd = dayStart.plus(1, ChronoUnit.DAYS);

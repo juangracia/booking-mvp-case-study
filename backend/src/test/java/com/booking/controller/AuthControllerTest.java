@@ -55,7 +55,7 @@ class AuthControllerTest {
 
     @Test
     void register_Success() throws Exception {
-        RegisterRequest request = new RegisterRequest("new@example.com", "password123");
+        RegisterRequest request = new RegisterRequest("new@example.com", "Password123");
 
         UserResponse userResponse = UserResponse.builder()
                 .id(UUID.randomUUID())
@@ -78,7 +78,7 @@ class AuthControllerTest {
 
     @Test
     void register_InvalidEmail() throws Exception {
-        RegisterRequest request = new RegisterRequest("invalid-email", "password123");
+        RegisterRequest request = new RegisterRequest("invalid-email", "Password123");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,18 @@ class AuthControllerTest {
 
     @Test
     void register_ShortPassword() throws Exception {
-        RegisterRequest request = new RegisterRequest("test@example.com", "short");
+        RegisterRequest request = new RegisterRequest("test@example.com", "Pass1");
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validationErrors.password").exists());
+    }
+
+    @Test
+    void register_WeakPassword() throws Exception {
+        RegisterRequest request = new RegisterRequest("test@example.com", "password123");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +111,7 @@ class AuthControllerTest {
 
     @Test
     void login_Success() throws Exception {
-        LoginRequest request = new LoginRequest("test@example.com", "password123");
+        LoginRequest request = new LoginRequest("test@example.com", "Password123");
 
         UserResponse userResponse = UserResponse.builder()
                 .id(UUID.randomUUID())

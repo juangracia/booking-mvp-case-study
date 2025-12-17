@@ -13,7 +13,8 @@ import java.util.UUID;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-    List<Booking> findByUserIdOrderByStartAtDesc(UUID userId);
+    @Query("SELECT b FROM Booking b JOIN FETCH b.user JOIN FETCH b.resource WHERE b.user.id = :userId ORDER BY b.startAt DESC")
+    List<Booking> findByUserIdOrderByStartAtDesc(@Param("userId") UUID userId);
 
     @Query("SELECT b FROM Booking b WHERE b.resource.id = :resourceId " +
            "AND b.status = 'ACTIVE' " +
@@ -34,7 +35,7 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
             @Param("dayStart") Instant dayStart,
             @Param("dayEnd") Instant dayEnd);
 
-    @Query("SELECT b FROM Booking b " +
+    @Query("SELECT b FROM Booking b JOIN FETCH b.user JOIN FETCH b.resource " +
            "WHERE (:resourceId IS NULL OR b.resource.id = :resourceId) " +
            "AND (:startDate IS NULL OR b.startAt >= :startDate) " +
            "AND (:endDate IS NULL OR b.startAt <= :endDate) " +

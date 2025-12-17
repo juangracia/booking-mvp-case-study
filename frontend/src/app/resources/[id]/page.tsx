@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { format, addHours, parseISO, startOfDay } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import Layout from '@/components/Layout';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -31,17 +31,7 @@ function ResourceDetailContent() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    loadResource();
-  }, [resourceId]);
-
-  useEffect(() => {
-    if (resource) {
-      loadAvailability();
-    }
-  }, [selectedDate, resource]);
-
-  const loadResource = async () => {
+  const loadResource = useCallback(async () => {
     try {
       const data = await resourceApi.getById(resourceId);
       setResource(data);
@@ -50,25 +40,41 @@ function ResourceDetailContent() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [resourceId]);
 
-  const loadAvailability = async () => {
+  const loadAvailability = useCallback(async () => {
     try {
       const data = await resourceApi.getAvailability(resourceId, selectedDate);
       setAvailability(data);
     } catch (err) {
-      console.error('Failed to load availability');
+      setError('Failed to load availability');
     }
-  };
+  }, [resourceId, selectedDate]);
+
+  useEffect(() => {
+    loadResource();
+  }, [loadResource]);
+
+  useEffect(() => {
+    if (resource) {
+      loadAvailability();
+    }
+  }, [resource, loadAvailability]);
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    if (startTime >= endTime) {
+      setError('End time must be after start time');
+      return;
+    }
+
     setIsBooking(true);
 
-    const startAt = new Date(`${selectedDate}T${startTime}:00.000Z`).toISOString();
-    const endAt = new Date(`${selectedDate}T${endTime}:00.000Z`).toISOString();
+    const startAt = new Date(`${selectedDate}T${startTime}:00Z`).toISOString();
+    const endAt = new Date(`${selectedDate}T${endTime}:00Z`).toISOString();
 
     try {
       await bookingApi.create({
@@ -145,9 +151,9 @@ function ResourceDetailContent() {
                 Booked slots on {format(parseISO(selectedDate), 'MMM d, yyyy')}:
               </h3>
               <div className="space-y-2">
-                {availability.map((slot, index) => (
+                {availability.map((slot) => (
                   <div
-                    key={index}
+                    key={slot.startAt}
                     className="bg-red-50 text-red-800 px-3 py-2 rounded text-sm"
                   >
                     {format(parseISO(slot.startAt), 'HH:mm')} -{' '}

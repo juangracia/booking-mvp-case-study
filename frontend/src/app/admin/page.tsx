@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { format, parseISO } from 'date-fns';
 import Layout from '@/components/Layout';
 import Button from '@/components/Button';
@@ -29,17 +29,7 @@ function AdminContent() {
 
   const [filterResourceId, setFilterResourceId] = useState('');
 
-  useEffect(() => {
-    loadData();
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (activeTab === 'bookings' && resources.length === 0) {
-      adminApi.getAllResources().then(setResources).catch(() => {});
-    }
-  }, [activeTab, resources.length]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
     setError('');
     try {
@@ -56,7 +46,17 @@ function AdminContent() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activeTab, filterResourceId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  useEffect(() => {
+    if (activeTab === 'bookings' && resources.length === 0) {
+      adminApi.getAllResources().then(setResources).catch(() => {});
+    }
+  }, [activeTab, resources.length]);
 
   const handleResourceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,12 +271,11 @@ function AdminContent() {
           <div className="flex items-center space-x-4 mb-6">
             <h2 className="text-lg font-semibold">All Bookings</h2>
             <select
+              id="filter-resource"
+              aria-label="Filter by resource"
               className="border border-gray-300 rounded-md px-3 py-2 text-sm"
               value={filterResourceId}
-              onChange={(e) => {
-                setFilterResourceId(e.target.value);
-                setTimeout(loadData, 0);
-              }}
+              onChange={(e) => setFilterResourceId(e.target.value)}
             >
               <option value="">All Resources</option>
               {resources.map((r) => (

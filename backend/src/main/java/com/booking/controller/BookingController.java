@@ -33,8 +33,10 @@ public class BookingController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get booking by ID")
-    public ResponseEntity<BookingResponse> getBooking(@PathVariable UUID id) {
-        return ResponseEntity.ok(bookingService.getBookingById(id));
+    public ResponseEntity<BookingResponse> getBooking(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        return ResponseEntity.ok(bookingService.getBookingById(id, principal));
     }
 
     @PostMapping
