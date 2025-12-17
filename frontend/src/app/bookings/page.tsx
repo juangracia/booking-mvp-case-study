@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
 import Layout from '@/components/Layout';
 import Button from '@/components/Button';
@@ -66,9 +67,9 @@ function BookingsContent() {
       {bookings.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 mb-4">You don&apos;t have any bookings yet.</p>
-          <a href="/resources" className="text-blue-600 hover:text-blue-500">
+          <Link href="/resources" className="text-blue-600 hover:text-blue-500">
             Browse resources to create a booking
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="space-y-8">
