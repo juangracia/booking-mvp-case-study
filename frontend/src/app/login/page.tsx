@@ -35,7 +35,13 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <div>
-          <h2 className="text-center text-3xl font-bold text-gray-900">
+          <h1 className="text-center text-4xl font-bold text-blue-600 mb-2">
+            Booking System
+          </h1>
+          <p className="text-center text-gray-500 mb-8">
+            Reserve meeting rooms, equipment, and shared resources
+          </p>
+          <h2 className="text-center text-2xl font-semibold text-gray-900">
             Sign in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
