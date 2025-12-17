@@ -38,6 +38,15 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
 logging:
   level:
     com.booking: ${LOG_LEVEL:INFO}
